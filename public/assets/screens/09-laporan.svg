@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600" role="img" aria-label="Contoh layar: laporan.pdf">
+  <rect width="960" height="600" rx="14" fill="#0f172a"/>
+  <rect width="960" height="56" rx="14" fill="#1e293b"/>
+  <rect y="42" width="960" height="14" fill="#1e293b"/>
+  <circle cx="30" cy="28" r="7" fill="#f87171"/>
+  <circle cx="56" cy="28" r="7" fill="#fbbf24"/>
+  <circle cx="82" cy="28" r="7" fill="#4ade80"/>
+  <text x="116" y="34" fill="#94a3b8" font-family="ui-monospace, Consolas, monospace" font-size="16">laporan.pdf</text>
+  <text x="44" y="116" fill="#fbbf24" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">laporan/UAS-Klinik-Pratama.pdf</text>
+  <text x="44" y="148" fill="#e2e8f0" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18"></text>
+  <text x="44" y="180" fill="#4ade80" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">Bab I   Studi kasus dan ruang lingkup</text>
+  <text x="44" y="212" fill="#4ade80" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">Bab II  Perancangan basis data</text>
+  <text x="44" y="244" fill="#4ade80" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">Bab III Implementasi (DDL, DML, objek)</text>
+  <text x="44" y="276" fill="#4ade80" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">Bab IV  Pengujian 34 pemeriksaan</text>
+  <text x="44" y="308" fill="#4ade80" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">Bab V   Kesimpulan dan saran</text>
+  <text x="44" y="340" fill="#e2e8f0" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18"></text>
+  <text x="44" y="372" fill="#94a3b8" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">Lampiran A  bukti/ (9 berkas)</text>
+  <text x="44" y="404" fill="#94a3b8" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">Lampiran B  kueri-panduan.sql (10)</text>
+  <text x="44" y="436" fill="#e2e8f0" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18"></text>
+  <text x="44" y="468" fill="#fbbf24" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">Halaman: 42   Status: siap kumpul</text>
+</svg>
