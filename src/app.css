@@ -1054,3 +1054,8 @@ kbd {
     line-height: 1.12;
   }
 }
+
+/* Root tidak boleh ikut scroll; tiap area punya pembungkus scroll sendiri. */
+html {
+  overflow: hidden;
+}
