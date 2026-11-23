@@ -12,7 +12,8 @@
     "check": "biome check --write .",
     "smoke": "bun run build && bun scripts/smoke.mjs --dist",
     "deploy": "wrangler deploy",
-    "cf:preview": "wrangler dev"
+    "cf:preview": "wrangler dev",
+    "links": "bun scripts/check-doc-links.mjs"
   },
   "dependencies": {
     "@astryxdesign/core": "^0.7.17",

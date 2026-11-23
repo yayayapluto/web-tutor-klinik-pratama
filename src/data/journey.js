@@ -3,11 +3,17 @@
    Nama peserta adalah anggota tim yang terdaftar di pembagian tugas. */
 
 const REPO = "https://github.com/yayayapluto/UAS-SQL-Klinik-Projek";
+const PANDUAN_REPO = "https://github.com/yayayapluto/UAS-SQL-Klinik-Panduan";
+const OUTPUT_REPO = "https://github.com/yayayapluto/UAS-SQL-Klinik-Output";
 
-const doc = (file, anchor) => ({
+const docIn = (base, file, anchor) => ({
   doc: file,
-  href: `${REPO}/blob/main/${file}${anchor ? `#${anchor}` : ""}`,
+  href: `${base}/blob/main/${file}${anchor ? `#${anchor}` : ""}`,
 });
+
+const doc = (file, anchor) => docIn(REPO, file, anchor);
+const panduanDoc = (file, anchor) => docIn(PANDUAN_REPO, file, anchor);
+const outputDoc = (file, anchor) => docIn(OUTPUT_REPO, file, anchor);
 
 const foundation = {
   id: "F0",
@@ -224,7 +230,7 @@ const members = [
           {
             id: "a1-8",
             title: "Uji jalur gagal prosedur",
-            baca: ["docs/panduan-anggota-1-kontrak-erd.md bagian uji"],
+            baca: ["panduan anggota 1 bagian uji"],
             kerja: [
               "Panggil sp_daftar_kunjungan pada jadwal yang sudah 20 pasien.",
               "Simpan keluaran galat ke bukti/04_prosedur.txt.",
@@ -245,39 +251,42 @@ const members = [
         id: "F4",
         title: "Laporan",
         tag: "laporan",
-        ...doc("laporan/README.md"),
+        ...outputDoc("laporan/template-laporan.tex"),
         steps: [
           {
             id: "a1-9",
             title: "Susun Bab I studi kasus",
-            baca: ["laporan/template Bab I"],
+            baca: ["laporan/template-laporan.tex bagian Deskripsi Basis Data"],
             kerja: [
               "Tulis latar belakang, ruang lingkup klinik, dan tujuan basis data.",
               "Gunakan angka dari PRD, bukan angka karangan.",
             ],
-            command: { label: "Buka kerangka", code: "sed -n '1,80p' laporan/template-laporan.tex" },
-            expected: { text: "\\chapter{Studi Kasus}", screens: ["09-laporan"] },
+            command: { label: "Buka kerangka", code: "sed -n '99,104p' laporan/template-laporan.tex" },
+            expected: {
+              text: "\\section{Deskripsi Basis Data}\n\\subsection{Latar belakang dan studi kasus}",
+              screens: ["09-laporan"],
+            },
             bukti: "Bab I selesai dan setiap angka punya rujukan PRD.",
           },
           {
             id: "a1-10",
             title: "Susun Bab III pembahasan",
-            baca: ["laporan/template Bab III"],
+            baca: ["laporan/template-laporan.tex bagian Perancangan dan Implementasi"],
             kerja: [
               "Jelaskan keputusan skema, normalisasi, dan pengaman aturan bisnis.",
               "Sertakan tabel peran enam anggota.",
             ],
             command: {
               label: "Cari bagian pembahasan",
-              code: "grep -n 'Pembahasan' laporan/template-laporan.tex",
+              code: "grep -n 'Perancangan dan Implementasi' laporan/template-laporan.tex",
             },
-            expected: { text: "\\chapter{Pembahasan}", screens: ["09-laporan"] },
+            expected: { text: "282:\\section{Perancangan dan Implementasi}", screens: ["09-laporan"] },
             bukti: "Bab III menjelaskan keputusan yang bisa ditunjuk di berkas SQL.",
           },
           {
             id: "a1-11",
             title: "Kumpulkan bukti semua anggota",
-            baca: ["laporan/README.md bagian bukti"],
+            baca: ["panduan anggota 6 bagian bukti"],
             kerja: [
               "Minta tiap anggota mengirim keluaran perintah berkasnya.",
               "Simpan dengan nama tetap di bukti/, jangan menyalin angka lama.",
@@ -313,7 +322,7 @@ const members = [
     role: "Data contoh dan normalisasi",
     branch: "anggota-2/data",
     level: "Awal",
-    filesOwned: ["sql/02_data.sql", "docs/normalisasi.md"],
+    filesOwned: ["sql/02_data.sql"],
     drivers: ["mysql 8.0", "git"],
     scenarios: ["isi semua tabel", "keadaan khusus", "1NF sampai BCNF"],
     screens: ["01-reset-db", "03-verify"],
@@ -400,7 +409,7 @@ const members = [
           {
             id: "a2-5",
             title: "Siapkan keadaan khusus",
-            baca: ["docs/panduan-anggota-2-normalisasi-data.md bagian keadaan khusus"],
+            baca: ["panduan anggota 2 bagian keadaan khusus"],
             kerja: [
               "Satu obat berstok 5 untuk uji stok minimum.",
               "Satu jadwal terisi 20 kunjungan untuk uji kuota.",
@@ -415,7 +424,7 @@ const members = [
           {
             id: "a2-6",
             title: "Uji pelanggaran kunci asing",
-            baca: ["docs/panduan-anggota-2-normalisasi-data.md bagian galat"],
+            baca: ["panduan anggota 2 bagian galat"],
             kerja: [
               "Coba INSERT kunjungan dengan id_pasien yang tidak ada.",
               "Pastikan database menolak dengan galat 1452.",
@@ -436,31 +445,34 @@ const members = [
         id: "F3",
         title: "Normalisasi",
         tag: "normalisasi",
-        ...doc("docs/normalisasi.md"),
+        ...panduanDoc("docs/panduan-anggota-2-normalisasi-data.md"),
         steps: [
           {
             id: "a2-7",
             title: "Tulis analisis 1NF",
-            baca: ["docs/normalisasi.md bagian 1NF"],
+            baca: ["panduan anggota 2 bagian 1NF"],
             kerja: [
               "Tunjukkan satu tabel rancangan awal yang kolomnya berulang (misal obat pada resep).",
               "Pecah menjadi resep dan resep_obat.",
             ],
-            command: { label: "Cari bagian 1NF", code: "grep -n '1NF' docs/normalisasi.md" },
-            expected: { text: "## 1NF: kolom atomik", screens: [] },
+            command: { label: "Cari bagian 1NF", code: "grep -n '1NF' laporan/template-laporan.tex" },
+            expected: {
+              text: "348:% Jelaskan tahap unnormalized, 1NF, 2NF, 3NF, dan BCNF. Sertakan tabel",
+              screens: [],
+            },
             bukti: "Tidak ada kolom berisi daftar pada skema final.",
           },
           {
             id: "a2-8",
             title: "Tulis analisis 2NF dan 3NF",
-            baca: ["docs/normalisasi.md bagian 2NF"],
+            baca: ["panduan anggota 2 bagian 2NF"],
             kerja: [
               "Buktikan tidak ada dependensi parsial pada kunci gabungan.",
               "Pisahkan atribut yang bergantung pada kolom non-kunci.",
             ],
-            command: { label: "Cari bagian 2NF", code: "grep -n '2NF\\|3NF' docs/normalisasi.md" },
+            command: { label: "Cari bagian 2NF", code: "grep -n '2NF' laporan/template-laporan.tex" },
             expected: {
-              text: "## 2NF: dependensi penuh\n## 3NF: tidak ada dependensi transitif",
+              text: "348:% Jelaskan tahap unnormalized, 1NF, 2NF, 3NF, dan BCNF. Sertakan tabel",
               screens: [],
             },
             bukti: "Setiap tabel memakai kunci tunggal atau kunci gabungan yang penuh.",
@@ -468,31 +480,37 @@ const members = [
           {
             id: "a2-9",
             title: "Tulis analisis BCNF",
-            baca: ["docs/normalisasi.md bagian BCNF"],
+            baca: ["panduan anggota 2 bagian BCNF"],
             kerja: [
               "Daftar semua kandidat kunci per tabel.",
               "Tunjukkan setiap determinan adalah kandidat kunci.",
             ],
-            command: { label: "Cari bagian BCNF", code: "grep -n 'BCNF' docs/normalisasi.md" },
-            expected: { text: "## BCNF: setiap determinan adalah kandidat kunci", screens: [] },
+            command: { label: "Cari bagian BCNF", code: "grep -n 'BCNF' laporan/template-laporan.tex" },
+            expected: {
+              text: "348:% Jelaskan tahap unnormalized, 1NF, 2NF, 3NF, dan BCNF. Sertakan tabel",
+              screens: [],
+            },
             bukti: "Contoh determinan di luar kandidat kunci tidak tersisa.",
           },
           {
             id: "a2-10",
             title: "Daftar dependensi fungsional",
-            baca: ["docs/normalisasi.md bagian dependensi"],
+            baca: ["panduan anggota 2 bagian dependensi"],
             kerja: [
               "Tulis notasi X -> Y untuk setiap atribut.",
               "Tandai dependensi yang dipecah saat normalisasi.",
             ],
-            command: { label: "Hitung dependensi", code: "grep -c '->' docs/normalisasi.md" },
-            expected: { text: "18", screens: [] },
+            command: { label: "Hitung dependensi", code: "sed -n '346,352p' laporan/template-laporan.tex" },
+            expected: {
+              text: "\\subsection{Normalisasi}\n% Jelaskan tahap unnormalized, 1NF, 2NF, 3NF, dan BCNF. Sertakan tabel",
+              screens: [],
+            },
             bukti: "Masing-masing dependensi bisa ditunjukkan pada tabel final.",
           },
           {
             id: "a2-11",
             title: "Verifikasi data dengan query dasar",
-            baca: ["docs/panduan-anggota-2-normalisasi-data.md bagian bukti"],
+            baca: ["panduan anggota 2 bagian bukti"],
             kerja: [
               "Jalankan query dasar: pasien per poli, kunjungan per bulan.",
               "Simpan tangkapan layar ke bukti/ atau lampirkan di laporan.",
@@ -507,7 +525,7 @@ const members = [
           {
             id: "a2-12",
             title: "Kirim bagian laporan normalisasi",
-            baca: ["laporan/template Bab II bagian normalisasi"],
+            baca: ["laporan/template-laporan.tex bagian Normalisasi"],
             kerja: [
               "Ringkas 1NF sampai BCNF ke Bab II.",
               "Serahkan ke A1 untuk dirakit bersama laporan lain.",
@@ -528,7 +546,7 @@ const members = [
     role: "Struktur dan transformasi",
     branch: "anggota-3/skema",
     level: "Awal",
-    filesOwned: ["sql/01_struktur.sql", "docs/transformasi.md"],
+    filesOwned: ["sql/01_struktur.sql"],
     drivers: ["mysql 8.0", "git"],
     scenarios: ["sebelas tabel", "kunci dan constraint", "skema relasional"],
     screens: ["02-struktur", "01-reset-db"],
@@ -633,34 +651,37 @@ const members = [
         id: "F2",
         title: "Transformasi dan aljabar",
         tag: "transformasi",
-        ...doc("docs/transformasi.md"),
+        ...panduanDoc("docs/panduan-anggota-3-struktur-transformasi.md"),
         steps: [
           {
             id: "a3-7",
             title: "Susun tabel transformasi dari ERD",
-            baca: ["docs/transformasi.md bagian tabel"],
+            baca: ["panduan anggota 3 bagian tabel"],
             kerja: [
               "Setiap entitas ERD menjadi satu tabel.",
               "Relasi banyak ke banyak dipecah menjadi tabel penghubung.",
             ],
-            command: { label: "Cari tabel transformasi", code: "grep -n '| Entitas' docs/transformasi.md" },
-            expected: { text: "| Entitas | Tabel | Kunci |", screens: [] },
+            command: {
+              label: "Cari tabel transformasi",
+              code: "grep -n 'Transformasi ke skema relasional' laporan/template-laporan.tex",
+            },
+            expected: { text: "340:\\subsection{Transformasi ke skema relasional}", screens: [] },
             bukti: "Jumlah baris transformasi sama dengan jumlah entitas ERD.",
           },
           {
             id: "a3-8",
             title: "Tulis skema relasional final",
-            baca: ["docs/transformasi.md bagian skema"],
+            baca: ["panduan anggota 3 bagian skema"],
             kerja: [
               "Tulis notasi R(kunci, atribut...) untuk setiap tabel.",
               "Tandai kunci asing dengan panah ke tabel tujuan.",
             ],
             command: {
               label: "Lihat skema relasional",
-              code: "sed -n '/skema relasional/,/^$/p' docs/transformasi.md",
+              code: "sed -n '340,352p' laporan/template-laporan.tex",
             },
             expected: {
-              text: "kunjungan(id_kunjungan, id_pasien*, id_jadwal*, tanggal_kunjungan, ...)",
+              text: "\\subsection{Transformasi ke skema relasional}\n\\subsection{Normalisasi}",
               screens: [],
             },
             bukti: "Setiap atribut di skema relasional muncul di sql/01_struktur.sql.",
@@ -668,7 +689,7 @@ const members = [
           {
             id: "a3-9",
             title: "Tulis aljabar relasional",
-            baca: ["docs/transformasi.md bagian aljabar"],
+            baca: ["panduan anggota 3 bagian aljabar"],
             kerja: [
               "Tulis proyeksi, seleksi, dan join untuk tiga query penting.",
               "Terjemahkan notasi ke SQL dan jalankan.",
@@ -683,10 +704,13 @@ const members = [
           {
             id: "a3-10",
             title: "Periksa kandidat kunci",
-            baca: ["docs/transformasi.md bagian kunci"],
+            baca: ["panduan anggota 3 bagian kunci"],
             kerja: ["Pastikan setiap kandidat kunci ditandai.", "Cocokkan dengan hasil normalisasi Dapa."],
-            command: { label: "Cari kandidat kunci", code: "grep -n 'kandidat' docs/transformasi.md" },
-            expected: { text: "kandidat kunci: id_dokter, no_sip", screens: [] },
+            command: {
+              label: "Cek kandidat kunci dokter",
+              code: "mysql klinik_pratama -e 'SHOW KEYS FROM dokter;'",
+            },
+            expected: { text: "id_dokter PRIMARY\nno_sip UNIQUE\nemail UNIQUE", screens: [] },
             bukti: "Tidak ada tabel tanpa kandidat kunci yang jelas.",
           },
           {
@@ -707,16 +731,16 @@ const members = [
           {
             id: "a3-12",
             title: "Kirim bagian laporan skema",
-            baca: ["laporan/template Bab II bagian skema"],
+            baca: ["laporan/template-laporan.tex bagian Transformasi ke skema relasional"],
             kerja: [
               "Tulis tabel transformasi dan skema relasional di Bab II.",
               "Serahkan ke A1 untuk dirakit.",
             ],
             command: {
               label: "Buka kerangka",
-              code: "grep -n 'Skema Relasional' laporan/template-laporan.tex",
+              code: "grep -n 'Transformasi ke skema relasional' laporan/template-laporan.tex",
             },
-            expected: { text: "\\section{Skema Relasional dan Transformasi}", screens: ["09-laporan"] },
+            expected: { text: "340:\\subsection{Transformasi ke skema relasional}", screens: ["09-laporan"] },
             bukti: "Bagian laporan skema terkirim tanpa angka karangan.",
           },
         ],
@@ -886,7 +910,7 @@ const members = [
         id: "F3",
         title: "Bukti objek",
         tag: "bukti",
-        ...doc("bukti"),
+        ...outputDoc("bukti"),
         steps: [
           {
             id: "a4-10",
@@ -915,7 +939,7 @@ const members = [
           {
             id: "a4-12",
             title: "Kirim bagian laporan objek",
-            baca: ["laporan/template Bab II bagian view dan trigger"],
+            baca: ["laporan/template-laporan.tex bagian Source code"],
             kerja: ["Ringkas view, trigger, dan indeks beserta bukti EXPLAIN ke Bab II, serahkan ke A1."],
             command: {
               label: "Buka kerangka",
@@ -978,7 +1002,7 @@ const members = [
           {
             id: "a5-3",
             title: "Uji akses yang harus ditolak",
-            baca: ["docs/panduan-anggota-5-keamanan-kueri.md bagian galat 1142"],
+            baca: ["panduan anggota 5 bagian galat 1142"],
             kerja: [
               "Masuk sebagai kasir, coba baca tabel users.",
               "Pastikan galat 1142 muncul dan catat di bukti.",
@@ -1014,12 +1038,12 @@ const members = [
         id: "F2",
         title: "Sepuluh kueri",
         tag: "kueri-v1",
-        ...doc("bukti/kueri-panduan.sql"),
+        ...outputDoc("bukti/kueri-panduan.sql"),
         steps: [
           {
             id: "a5-5",
             title: "Kueri Q1 dan Q2: pencarian pasien",
-            baca: ["docs/panduan-anggota-5-keamanan-kueri.md bagian Q1"],
+            baca: ["panduan anggota 5 bagian Q1"],
             kerja: [
               "Q1: pasien dengan nama berawalan huruf tertentu.",
               "Q2: pasien yang belum pernah berkunjung.",
@@ -1034,7 +1058,7 @@ const members = [
           {
             id: "a5-6",
             title: "Kueri Q3 dan Q4: rentang tanggal",
-            baca: ["docs/panduan-anggota-5-keamanan-kueri.md bagian Q3"],
+            baca: ["panduan anggota 5 bagian Q3"],
             kerja: ["Q3: kunjungan pada satu bulan.", "Q4: pendaftaran per hari pada minggu terakhir."],
             command: {
               label: "Jalankan Q3",
@@ -1046,7 +1070,7 @@ const members = [
           {
             id: "a5-7",
             title: "Kueri Q5 dan Q6: join poli dan dokter",
-            baca: ["docs/panduan-anggota-5-keamanan-kueri.md bagian Q5"],
+            baca: ["panduan anggota 5 bagian Q5"],
             kerja: ["Q5: jumlah dokter per poli.", "Q6: jadwal dokter beserta hari praktik."],
             command: {
               label: "Jalankan Q5",
@@ -1058,7 +1082,7 @@ const members = [
           {
             id: "a5-8",
             title: "Kueri Q7 dan Q8: agregasi",
-            baca: ["docs/panduan-anggota-5-keamanan-kueri.md bagian Q7"],
+            baca: ["panduan anggota 5 bagian Q7"],
             kerja: ["Q7: kunjungan per poli.", "Q8: total pendapatan per bulan."],
             command: {
               label: "Jalankan Q8",
@@ -1070,7 +1094,7 @@ const members = [
           {
             id: "a5-9",
             title: "Kueri Q9: subquery",
-            baca: ["docs/panduan-anggota-5-keamanan-kueri.md bagian Q9"],
+            baca: ["panduan anggota 5 bagian Q9"],
             kerja: ["Q9: pasien dengan kunjungan lebih banyak dari rata-rata."],
             command: {
               label: "Jalankan Q9",
@@ -1097,7 +1121,7 @@ const members = [
         id: "F3",
         title: "Bukti kueri",
         tag: "bukti",
-        ...doc("bukti/10-kueri.txt"),
+        ...outputDoc("bukti/10-kueri.txt"),
         steps: [
           {
             id: "a5-11",
@@ -1114,7 +1138,7 @@ const members = [
           {
             id: "a5-12",
             title: "Kirim bagian laporan keamanan",
-            baca: ["laporan/template Bab II bagian keamanan"],
+            baca: ["laporan/template-laporan.tex bagian Source code"],
             kerja: ["Ringkas tiga pengguna, hak minimal, dan dua kueri kunci untuk Bab II."],
             command: { label: "Buka kerangka", code: "grep -n 'Keamanan' laporan/template-laporan.tex" },
             expected: { text: "\\section{Keamanan dan Hak Akses}", screens: ["09-laporan"] },
@@ -1147,7 +1171,7 @@ const members = [
           {
             id: "a6-1",
             title: "Uji 1 sampai 3: penolakan oleh basis data",
-            baca: ["docs/panduan-anggota-6-pengujian-rilis.md bagian Milestone 1"],
+            baca: ["panduan anggota 6 bagian Milestone 1"],
             kerja: [
               "Uji 1: antrean ganda pada satu jadwal, harapkan galat 1062.",
               "Uji 2: kunjungan dengan pasien tak terdaftar, harapkan galat 1452.",
@@ -1182,7 +1206,7 @@ const members = [
           {
             id: "a6-3",
             title: "Uji 7 sampai 9: alur yang harus berhasil",
-            baca: ["docs/panduan-anggota-6-pengujian-rilis.md bagian 1.1"],
+            baca: ["panduan anggota 6 bagian 1.1"],
             kerja: [
               "Uji 7: daftar lalu bayar pada jadwal Desember 2026, total 155000.00.",
               "Uji 8: bayar kunjungan yang sudah lunas, pesan ditolak.",
@@ -1224,7 +1248,7 @@ const members = [
           {
             id: "a6-5",
             title: "Reset database dan jalankan verify.sh",
-            baca: ["docs/panduan-anggota-6-pengujian-rilis.md bagian Milestone 2"],
+            baca: ["panduan anggota 6 bagian Milestone 2"],
             kerja: [
               "Jalankan reset-db.sh supaya pemeriksaan dimulai dari kondisi awal.",
               "Jalankan verify.sh, 34 pemeriksaan dalam tujuh bagian A sampai G.",
@@ -1266,7 +1290,7 @@ const members = [
           {
             id: "a6-8",
             title: "Kumpulkan seluruh bukti",
-            baca: ["docs/panduan-anggota-6-pengujian-rilis.md bagian 3.1"],
+            baca: ["panduan anggota 6 bagian 3.1"],
             kerja: [
               "Pastikan bukti/ memuat reset, keamanan, indeks, uji, kueri, isolasi, dan verify.",
               "Semua bukti diambil dari database hasil reset-db.sh.",
@@ -1281,7 +1305,7 @@ const members = [
         id: "F6",
         title: "Rilis laporan",
         tag: "rilis-v1",
-        ...doc("laporan/template-laporan.tex"),
+        ...outputDoc("laporan/template-laporan.tex"),
         steps: [
           {
             id: "a6-9",
@@ -1304,16 +1328,19 @@ const members = [
           {
             id: "a6-10",
             title: "Rakit laporan lengkap",
-            baca: ["docs/panduan-anggota-6-pengujian-rilis.md bagian 4.1"],
+            baca: ["panduan anggota 6 bagian 4.1"],
             kerja: [
               "Terima bagian Bab I sampai III dari anggota lain dan gabungkan.",
               "Pastikan Bab II memuat ERD, transformasi, normalisasi, kode, dan tangkapan layar.",
             ],
             command: {
               label: "Periksa struktur",
-              code: "grep -n '\\\\chapter|\\\\section' laporan/template-laporan.tex",
+              code: "grep -n '^\\\\section' laporan/template-laporan.tex",
             },
-            expected: { text: "Tiga bab lengkap tanpa bagian kosong", screens: ["09-laporan"] },
+            expected: {
+              text: "99:\\section{Deskripsi Basis Data}\n282:\\section{Perancangan dan Implementasi}",
+              screens: ["09-laporan"],
+            },
             bukti: "Tidak ada komentar % ISI yang tersisa di laporan final.",
           },
           {
@@ -1331,7 +1358,7 @@ const members = [
           {
             id: "a6-12",
             title: "Daftar periksa akhir sebelum rilis",
-            baca: ["docs/panduan-anggota-6-pengujian-rilis.md bagian Milestone 5"],
+            baca: ["panduan anggota 6 bagian Milestone 5"],
             kerja: [
               "Periksa lima belas butir satu per satu, masing-masing dengan bukti.",
               "Pastikan repositori bersih dari .aux, .log, dan .toc.",
