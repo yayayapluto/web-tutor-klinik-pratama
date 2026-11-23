@@ -1,0 +1,32 @@
+{
+  "name": "web-tutor-klinik-pratama",
+  "version": "1.0.0",
+  "description": "Tutor interaktif tim Klinik Pratama: pilih peserta, ikuti journey SQL, cek expected result.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "biome check .",
+    "check": "biome check --write .",
+    "smoke": "bun run build && bun scripts/smoke.mjs --dist"
+  },
+  "dependencies": {
+    "@astryxdesign/core": "^0.7.17",
+    "@astryxdesign/theme-neutral": "^0.7.17",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6.8",
+    "@vitejs/plugin-react": "^6.3.0",
+    "vite": "^8.3.8"
+  },
+  "allowScripts": {
+    "@astryxdesign/core@0.7.17": true
+  },
+  "trustedDependencies": [
+    "@astryxdesign/core"
+  ]
+}

@@ -1,0 +1,11 @@
+flowchart TB
+  P["Pilih peserta<br/>5 kartu progres"] --> J["Journey peserta<br/>F0 + fase modul"]
+  J --> B["Baca panduan<br/>dan materi kuliah"]
+  B --> K["Kerja di repo<br/>sql, data, bukti"]
+  K --> C["Jalankan perintah<br/>salin dari kartu"]
+  C --> E["Cocokkan expected result<br/>dan layar target"]
+  E --> M["Tandai selesai<br/>centang tersimpan"]
+  M --> N{"Masih ada<br/>langkah?"}
+  N -- ya --> J
+  N -- tidak --> D["Progres 100 persen<br/>siap demo"]
+  P -. ganti peserta .-> X["Kartu peserta lain"]

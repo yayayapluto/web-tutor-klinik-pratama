@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600" role="img" aria-label="Contoh layar: view + trigger">
+  <rect width="960" height="600" rx="14" fill="#0f172a"/>
+  <rect width="960" height="56" rx="14" fill="#1e293b"/>
+  <rect y="42" width="960" height="14" fill="#1e293b"/>
+  <circle cx="30" cy="28" r="7" fill="#f87171"/>
+  <circle cx="56" cy="28" r="7" fill="#fbbf24"/>
+  <circle cx="82" cy="28" r="7" fill="#4ade80"/>
+  <text x="116" y="34" fill="#94a3b8" font-family="ui-monospace, Consolas, monospace" font-size="16">view + trigger</text>
+  <text x="44" y="116" fill="#67e8f9" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">mysql&gt; SELECT * FROM v_kunjungan_harian LIMIT 3;</text>
+  <text x="44" y="148" fill="#e2e8f0" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">+------------+-------+------------+-------------+</text>
+  <text x="44" y="180" fill="#e2e8f0" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">| tanggal    | poli  | dokter     | total       |</text>
+  <text x="44" y="212" fill="#e2e8f0" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">+------------+-------+------------+-------------+</text>
+  <text x="44" y="244" fill="#4ade80" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">| 2026-11-02 | Umum  | dr. Andini | 4           |</text>
+  <text x="44" y="276" fill="#4ade80" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">| 2026-11-03 | Gigi  | dr. Bagas  | 3           |</text>
+  <text x="44" y="308" fill="#e2e8f0" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">+------------+-------+------------+-------------+</text>
+  <text x="44" y="340" fill="#e2e8f0" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18"></text>
+  <text x="44" y="372" fill="#67e8f9" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">mysql&gt; INSERT ... jadwal penuh;</text>
+  <text x="44" y="404" fill="#f87171" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="18">ERROR 1644 (45000): Jadwal dokter sudah penuh</text>
+</svg>
