@@ -4,6 +4,8 @@ Tutor interaktif untuk tim UAS Konsep Basis Data. Lima peserta memilih kartunya 
 
 Aplikasi ini hanya berisi materi dan penanda progres; tidak menjalankan MySQL dan tidak mengubah repo kerja.
 
+**Live:** https://tutor-klinikpratama.yyypluto.my.id/
+
 ## Daftar Isi
 
 - [Features](#features)
@@ -196,6 +198,8 @@ Di dashboard Cloudflare (Settings → Build), isi:
 | Root directory | isi repo |
 
 Nama Worker mengikuti `name` di `wrangler.jsonc`, jadi ubah di sana bila nama proyek berbeda.
+
+Domain produksi: https://tutor-klinikpratama.yyypluto.my.id/ — custom domain Worker yang dipasang di dashboard Cloudflare (Workers & Pages → Worker → Settings → Domains & Routes), bukan di `wrangler.jsonc`.
 
 ## Troubleshooting
 
