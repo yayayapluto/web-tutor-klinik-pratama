@@ -768,7 +768,7 @@ export default function App() {
                       Pilih peserta, ikuti journey, cocokkan hasil SQL.
                     </Heading>
                     <p className="hero-sub">
-                      Lima peserta, satu basis data klinik. Setiap kartu memuat langkah dari membaca panduan,
+                      Enam peserta, satu basis data klinik. Setiap kartu memuat langkah dari membaca panduan,
                       menulis modul SQL, menjalankan perintah, sampai expected result yang bisa ditunjukkan
                       saat demo.
                     </p>
@@ -833,7 +833,7 @@ export default function App() {
                   ))}
                 </div>
                 <p className="muted">
-                  Tip: tekan <kbd>1</kbd>–<kbd>5</kbd> untuk memilih peserta.
+                  Tip: tekan <kbd>1</kbd>–<kbd>6</kbd> untuk memilih peserta.
                 </p>
               </VStack>
             </div>

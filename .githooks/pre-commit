@@ -1,5 +1,4 @@
-#!/usr/bin/env sh
-# Cek wajib sebelum commit: lint dan smoke build/preview.
+#!/bin/sh
 set -e
-bun run lint
+bunx biome check .
 bun run smoke

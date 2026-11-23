@@ -1,6 +1,6 @@
 # Web Tutor Klinik Pratama
 
-Tutor interaktif untuk tim UAS Konsep Basis Data. Lima peserta memilih kartunya sendiri, lalu mengikuti journey langkah demi langkah: baca panduan, tulis modul SQL, jalankan perintah, dan cocokkan keluaran dengan expected result. Progres centang disimpan di browser, jadi bisa dilanjutkan kapan saja.
+Tutor interaktif untuk tim UAS Konsep Basis Data. Enam peserta memilih kartunya sendiri, lalu mengikuti journey langkah demi langkah: baca panduan, tulis modul SQL, jalankan perintah, dan cocokkan keluaran dengan expected result. Progres centang disimpan di browser, jadi bisa dilanjutkan kapan saja.
 
 Aplikasi ini hanya berisi materi dan penanda progres; tidak menjalankan MySQL dan tidak mengubah repo kerja.
 
@@ -24,13 +24,13 @@ Aplikasi ini hanya berisi materi dan penanda progres; tidak menjalankan MySQL da
 
 ## Features
 
-- Lima kartu peserta (A1–A5) berisi role, branch, level, dan cincin progres.
-- Journey 16 langkah per peserta: F0 fondasi bersama, lalu fase modul masing-masing.
+- Enam kartu peserta (A1–A6) berisi role, branch, level, dan cincin progres.
+- Journey 12 langkah per peserta: F0 fondasi bersama, lalu fase modul masing-masing.
 - Tiap langkah memuat materi kuliah, bahan bacaan, langkah kerja, perintah siap salin, expected result, dan bukti selesai.
 - Centang langkah berurutan; langkah berikutnya terbuka setelah yang sekarang selesai.
 - Progres dan tema tersimpan di `localStorage`, tanpa akun.
 - Sembilan layar target berupa SVG: reset database, struktur tabel, verifikasi 34 pemeriksaan, view/trigger, prosedur, hak akses, EXPLAIN, sepuluh skenario uji, dan laporan.
-- Theme terang/gelap, pintasan `1`–`5` di halaman pilih, `Esc` untuk kembali.
+- Theme terang/gelap, pintasan `1`–`6` di halaman pilih, `Esc` untuk kembali.
 - Responsif: tiga kolom di desktop, satu kolom dengan drawer langkah/info di ponsel.
 - Reset progres per peserta lewat dialog konfirmasi.
 
@@ -61,7 +61,7 @@ Aplikasi ini hanya berisi materi dan penanda progres; tidak menjalankan MySQL da
    ```bash
    bun run dev
    ```
-6. **Verify it loaded:** buka `http://localhost:5185/`, halaman harus menampilkan judul "Pilih peserta, ikuti journey, cocokkan hasil SQL." dan lima kartu A1–A5.
+6. **Verify it loaded:** buka `http://localhost:5185/`, halaman harus menampilkan judul "Pilih peserta, ikuti journey, cocokkan hasil SQL." dan enam kartu A1–A6.
 
 ## Usage
 
@@ -88,7 +88,7 @@ Aksi yang tersedia:
 | Reset progres | Kanan atas | Dialog konfirmasi, menghapus centang peserta itu |
 | Langkah / Info | Kepala journey di ponsel | Membuka drawer timeline atau konteks peserta |
 
-Persen di halaman pilih dihitung dari jumlah centang dibagi 16 langkah peserta tersebut. Kartu A1–A5 di halaman pilih bersifat navigasi, bukan tombol aksi.
+Persen di halaman pilih dihitung dari jumlah centang dibagi 12 langkah peserta tersebut. Kartu A1–A6 di halaman pilih bersifat navigasi, bukan tombol aksi.
 
 ## Reading the fields
 
@@ -140,7 +140,7 @@ Web-Tutor-KlinikPratama/
     ├── app.css              # token Astryx + komposisi
     ├── icons.jsx            # ikon garis
     ├── theme.js             # tema netral Astryx
-    └── data/journey.js      # 5 peserta, 16 langkah per journey (64 total)
+    └── data/journey.js      # 6 peserta, 12 langkah per journey (72 total)
 ```
 
 ![Alur tutor](docs/klinik-flow.svg)
