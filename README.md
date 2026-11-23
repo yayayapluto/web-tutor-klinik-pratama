@@ -14,6 +14,7 @@ Aplikasi ini hanya berisi materi dan penanda progres; tidak menjalankan MySQL da
 - [What it reads and touches](#what-it-reads-and-touches)
 - [Architecture](#architecture)
 - [Development](#development)
+- [Deploy (Cloudflare Workers)](#deploy-cloudflare-workers)
 - [Troubleshooting](#troubleshooting)
 - [Security notes](#security-notes)
 - [License](#license)
@@ -32,8 +33,7 @@ Aplikasi ini hanya berisi materi dan penanda progres; tidak menjalankan MySQL da
 
 ## Requirements
 
-- Bun 1.3+ (dipakai untuk install, dev, build, dan smoke test)
-- Node.js 20.19+ atau 22.12+ bila ingin memakai `npm`/`npx` sebagai ganti Bun
+- Bun 1.3+ — satu-satunya toolchain: install, dev, build, lint, smoke, dan wrangler lewat `bun`/`bunx`. Node/npm tidak dipakai.
 - Browser modern (Chromium, Firefox, Safari) dengan dukungan `dialog` dan `startViewTransition` opsional
 
 ## Install
@@ -119,6 +119,7 @@ Web-Tutor-KlinikPratama/
 ├── index.html               # kerangka halaman
 ├── package.json             # skrip dev/build/lint/smoke
 ├── vite.config.js           # port 5185
+├── wrangler.jsonc           # deploy Cloudflare Workers + dist sebagai aset
 ├── biome.json               # lint dan format
 ├── public/
 │   ├── favicon.svg
@@ -136,7 +137,7 @@ Web-Tutor-KlinikPratama/
     ├── app.css              # token Astryx + komposisi
     ├── icons.jsx            # ikon garis
     ├── theme.js             # tema netral Astryx
-    └── data/journey.js      # peserta, fase, 80 langkah
+    └── data/journey.js      # 5 peserta, 16 langkah per journey (64 total)
 ```
 
 ![Alur tutor](docs/klinik-flow.svg)
@@ -153,10 +154,48 @@ Data mengalir satu arah: `journey.js` → komponen React → DOM; centang dituli
 | `bun run lint` | Biome check tanpa menulis |
 | `bun run check` | Biome check + perbaikan otomatis |
 | `bun run smoke` | Build, jalankan preview, periksa halaman, bundel, dan aset |
-| `node scripts/make-screens.mjs` | Membuat ulang sembilan SVG layar target |
-| `bash docs/build-flow.sh` | Kompilasi diagram alur (butuh Git Bash/WSL) |
+| `bun run deploy` | Deploy `dist/` ke Cloudflare Workers (butuh login wrangler) |
+| `bun run cf:preview` | Sajikan `dist/` lewat runtime Workers lokal |
+| `bun scripts/make-screens.mjs` | Membuat ulang sembilan SVG layar target |
+| `bash docs/build-flow.sh` | Kompilasi diagram alur lewat Bun (butuh Git Bash) |
 
 Konten journey berada di `src/data/journey.js`. Menambah langkah berarti menambah objek `{ id, title, baca, kerja, expected, bukti }` di fase yang sesuai; ID harus unik karena dipakai sebagai kunci progres.
+
+## Deploy (Cloudflare Workers)
+
+`wrangler.jsonc` menyajikan `dist/` sebagai aset statis dengan fallback SPA.
+
+1. Build lokal dan cek hasilnya.
+
+   ```bash
+   bun run build
+   bun run cf:preview
+   ```
+
+   Buka `http://127.0.0.1:8787/`; halaman, `/assets/screens/*.svg`, dan URL dalam aplikasi harus 200.
+
+2. Login sekali di mesin ini.
+
+   ```bash
+   bunx wrangler login
+   ```
+
+3. Deploy.
+
+   ```bash
+   bun run deploy
+   ```
+
+Di dashboard Cloudflare (Settings → Build), isi:
+
+| Isian | Nilai |
+|---|---|
+| Build command | `bun run build` |
+| Deploy command | `bunx wrangler deploy` |
+| Preview command | `bunx wrangler dev` (bukan `wrangler preview`; perintah itu dihapus di wrangler 4) |
+| Root directory | isi repo |
+
+Nama Worker mengikuti `name` di `wrangler.jsonc`, jadi ubah di sana bila nama proyek berbeda.
 
 ## Troubleshooting
 
@@ -165,9 +204,10 @@ Konten journey berada di `src/data/journey.js`. Menambah langkah berarti menamba
 | Port 5185 sudah dipakai | Proses dev lain masih hidup | Hentikan proses itu atau ubah `server.port` di `vite.config.js` |
 | Halaman putih setelah `bun install` | Postinstall Astryx diblokir | Jalankan `bun pm trust @astryxdesign/core` lalu ulangi `bun run dev` |
 | Progres kembali 0 | `localStorage` dibersihkan atau mode privat | Pakai jendela normal; centang ulang |
-| Thumbnail layar kosong | Aset belum ada atau path salah | Jalankan `node scripts/make-screens.mjs` |
+| Thumbnail layar kosong | Aset belum ada atau path salah | Jalankan `bun scripts/make-screens.mjs` |
 | `bun run smoke` gagal di port 5186 | Port preview bentrok | Hentikan proses preview lain |
 | Diagram alur tidak berubah | SVG lama belum dikompilasi ulang | Jalankan `bash docs/build-flow.sh` |
+| Deploy gagal dengan error autentikasi | Wrangler belum login di mesin ini | Jalankan `bunx wrangler login` lalu ulangi `bun run deploy` |
 
 ## Security notes
 

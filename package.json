@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "lint": "biome check .",
     "check": "biome check --write .",
-    "smoke": "bun run build && bun scripts/smoke.mjs --dist"
+    "smoke": "bun run build && bun scripts/smoke.mjs --dist",
+    "deploy": "wrangler deploy",
+    "cf:preview": "wrangler dev"
   },
   "dependencies": {
     "@astryxdesign/core": "^0.7.17",
@@ -21,7 +23,8 @@
   "devDependencies": {
     "@biomejs/biome": "^2.6.8",
     "@vitejs/plugin-react": "^6.3.0",
-    "vite": "^8.3.8"
+    "vite": "^8.3.8",
+    "wrangler": "^4.166.0"
   },
   "allowScripts": {
     "@astryxdesign/core@0.7.17": true

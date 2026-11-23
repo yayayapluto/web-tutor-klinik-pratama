@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 # Kompilasi diagram alur lalu jadikan SVG mandiri (latar putih, warna literal).
+# Semua langkah memakai Bun, bukan Node/npm.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-node "$HOME/.omp/tools/pele/render.mjs" docs/klinik-flow.mmd -o docs/klinik-flow.svg
+PELE="${PELE:-$HOME/.omp/tools/pele/render.mjs}"
+bun "$(cygpath -w "$PELE" 2>/dev/null || echo "$PELE")" docs/klinik-flow.mmd -o docs/klinik-flow.svg
 
-node - <<'NODE'
+bun run - <<'BUN'
 const fs = require("node:fs");
 const file = "docs/klinik-flow.svg";
 let svg = fs.readFileSync(file, "utf8");
@@ -22,6 +24,6 @@ svg = svg
   .replaceAll("var(--_r)", "#cbd5e1")
   .replaceAll("var(--_c)", "#475569");
 fs.writeFileSync(file, svg);
-NODE
+BUN
 
 echo "docs/klinik-flow.svg siap"
