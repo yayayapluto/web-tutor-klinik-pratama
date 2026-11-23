@@ -1,0 +1,11 @@
+// Konfigurasi Cloudflare Workers untuk SPA statis hasil `vite build`.
+// Dashboard: build `bun run build`, deploy `npx wrangler deploy`.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "web-tutor-klinik-pratama",
+  "compatibility_date": "2026-11-23",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
