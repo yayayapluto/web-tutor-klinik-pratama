@@ -17,6 +17,7 @@ Aplikasi ini hanya berisi materi dan penanda progres; tidak menjalankan MySQL da
 - [Architecture](#architecture)
 - [Development](#development)
 - [Deploy (Cloudflare Workers)](#deploy-cloudflare-workers)
+- [SEO dan pratinjau tautan](#seo-dan-pratinjau-tautan)
 - [Troubleshooting](#troubleshooting)
 - [Security notes](#security-notes)
 - [License](#license)
@@ -200,6 +201,13 @@ Di dashboard Cloudflare (Settings → Build), isi:
 Nama Worker mengikuti `name` di `wrangler.jsonc`, jadi ubah di sana bila nama proyek berbeda.
 
 Domain produksi: https://tutor-klinikpratama.yyypluto.my.id/ — custom domain Worker yang dipasang di dashboard Cloudflare (Workers & Pages → Worker → Settings → Domains & Routes), bukan di `wrangler.jsonc`.
+
+## SEO dan pratinjau tautan
+
+- `index.html` memuat canonical, meta `og:*` lengkap, `twitter:summary_large_image`, dan JSON-LD `WebSite`.
+- Gambar pratinjau: `public/og-cover.png` (1500x788, ambil dari tampilan pilih peserta).
+- `public/robots.txt` mengizinkan crawl dan menunjuk `sitemap.xml`; sitemap berisi satu URL produksi.
+- URL kanonik memakai https://tutor-klinikpratama.yyypluto.my.id/ — ganti di ketiga tempat (index, robots, sitemap) bila domain berubah.
 
 ## Troubleshooting
 
