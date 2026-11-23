@@ -1124,6 +1124,226 @@ const members = [
       },
     ],
   },
+  {
+    code: "A6",
+    role: "Pengujian dan rilis",
+    branch: "anggota-6/uji-rilis",
+    level: "Menengah",
+    filesOwned: ["sql/07_pengujian.sql", "bukti/07_pengujian.txt", "bukti/verify.txt"],
+    drivers: ["mysql 8.0", "bash", "pdflatex"],
+    scenarios: ["sepuluh uji", "34 pemeriksaan", "isolasi transaksi"],
+    screens: ["08-uji", "03-verify", "09-laporan"],
+    larangan: [
+      "Jangan menyunting skema, data, atau objek milik anggota lain; laporkan galat ke pemiliknya.",
+      "Jangan melonggarkan pemeriksaan agar lulus.",
+    ],
+    phases: [
+      {
+        id: "F4",
+        title: "Sepuluh skenario uji",
+        tag: "uji-v1",
+        ...doc("sql/07_pengujian.sql"),
+        steps: [
+          {
+            id: "a6-1",
+            title: "Uji 1 sampai 3: penolakan oleh basis data",
+            baca: ["docs/panduan-anggota-6-pengujian-rilis.md bagian Milestone 1"],
+            kerja: [
+              "Uji 1: antrean ganda pada satu jadwal, harapkan galat 1062.",
+              "Uji 2: kunjungan dengan pasien tak terdaftar, harapkan galat 1452.",
+              "Uji 3: suhu tubuh 50 derajat, harapkan galat 3819.",
+            ],
+            command: {
+              label: "Jalankan uji 1-3",
+              code: "docker exec -i kbd-mysql mysql -uroot -pkbd --force < sql/07_pengujian.sql",
+            },
+            expected: {
+              text: "Duplicate entry '2-1' for key 'uq_kunjungan_antrean'",
+              screens: ["08-uji"],
+            },
+            bukti: "Tiga galat muncul dengan pesan persis seperti tabel kontrak.",
+          },
+          {
+            id: "a6-2",
+            title: "Uji 4 sampai 6: penolakan oleh trigger dan prosedur",
+            baca: ["sql/03_trigger.sql", "sql/04_prosedur.sql"],
+            kerja: [
+              "Uji 4: pendaftaran melewati kuota pada jadwal 7 yang sudah penuh.",
+              "Uji 5: jadwal dokter bentrok.",
+              "Uji 6: resep melebihi stok obat 8.",
+            ],
+            command: {
+              label: "Jalankan uji 4",
+              code: "CALL daftar_kunjungan(1, 7, '2026-12-01', '10:00:00');",
+            },
+            expected: { text: "Kuota jadwal sudah penuh", screens: ["08-uji"] },
+            bukti: "Pesan kuota, bentrok, dan stok kurang tercatat apa adanya.",
+          },
+          {
+            id: "a6-3",
+            title: "Uji 7 sampai 9: alur yang harus berhasil",
+            baca: ["docs/panduan-anggota-6-pengujian-rilis.md bagian 1.1"],
+            kerja: [
+              "Uji 7: daftar lalu bayar pada jadwal Desember 2026, total 155000.00.",
+              "Uji 8: bayar kunjungan yang sudah lunas, pesan ditolak.",
+              "Uji 9: view v_kunjungan_lengkap menampilkan gabungan.",
+            ],
+            command: {
+              label: "Cek hasil uji 7",
+              code: "SELECT total_dibayar FROM pembayaran WHERE id_kunjungan = <id_uji7>;",
+            },
+            expected: { text: "155000.00", screens: ["08-uji"] },
+            bukti: "Uji 7 dan 9 berhasil; uji 8 ditolak dengan pesan sudah dibayar.",
+          },
+          {
+            id: "a6-4",
+            title: "Uji 10 dan blok pembersihan",
+            baca: ["sql/05_keamanan.sql"],
+            kerja: [
+              "Uji 10: INSERT oleh petugas ditolak galat 1142, dijalankan bukan sebagai root.",
+              "Pastikan blok pembersihan mengembalikan stok dan jumlah baris awal.",
+            ],
+            command: {
+              label: "Simpan bukti uji",
+              code: "docker exec -i kbd-mysql mysql -uroot -pkbd --force < sql/07_pengujian.sql > bukti/07_pengujian.txt",
+            },
+            expected: {
+              text: "ERROR 1142 (42000): INSERT command denied ... 'obat'",
+              screens: ["06-keamanan"],
+            },
+            bukti: "Uji bisa dijalankan berulang tanpa mengubah angka laporan.",
+          },
+        ],
+      },
+      {
+        id: "F5",
+        title: "Pemeriksaan otomatis dan isolasi",
+        tag: "verify-v1",
+        ...doc("tools/verify.sh"),
+        steps: [
+          {
+            id: "a6-5",
+            title: "Reset database dan jalankan verify.sh",
+            baca: ["docs/panduan-anggota-6-pengujian-rilis.md bagian Milestone 2"],
+            kerja: [
+              "Jalankan reset-db.sh supaya pemeriksaan dimulai dari kondisi awal.",
+              "Jalankan verify.sh, 34 pemeriksaan dalam tujuh bagian A sampai G.",
+            ],
+            command: {
+              label: "Jalankan pemeriksaan",
+              code: "bash tools/reset-db.sh && bash tools/verify.sh > bukti/verify.txt",
+            },
+            expected: { text: "Lulus: 34   Gagal: 0\nSEMUA PEMERIKSAAN LULUS", screens: ["03-verify"] },
+            bukti: "Semua bagian A sampai G lulus; kegagalan berarti skema berubah.",
+          },
+          {
+            id: "a6-6",
+            title: "Baca hasil pemeriksaan per bagian",
+            baca: ["bukti/verify.txt"],
+            kerja: [
+              "Bagian E memastikan pesan galatnya sesuai, bukan hanya gagal.",
+              "Bagian G membandingkan total tagihan dengan hitungan manual.",
+            ],
+            command: { label: "Ringkas hasil", code: "grep -c 'OK' bukti/verify.txt" },
+            expected: { text: "34 baris OK, nol baris GAGAL", screens: ["03-verify"] },
+            bukti: "Laporan menyebut jumlah pemeriksaan per bagian, bukan total saja.",
+          },
+          {
+            id: "a6-7",
+            title: "Demo isolasi READ COMMITTED dan REPEATABLE READ",
+            baca: ["tools/demo-isolasi.sh"],
+            kerja: [
+              "Jalankan dua sesi bersamaan pada tingkat isolasi berbeda.",
+              "Tunjukkan perbedaan hasil, perubahan stok setelah COMMIT, dan galat 1213.",
+            ],
+            command: { label: "Demo isolasi", code: "bash tools/demo-isolasi.sh > bukti/isolasi.txt" },
+            expected: {
+              text: "Hasil kedua tingkat isolasi berbeda; deadlock tercatat",
+              screens: ["03-verify"],
+            },
+            bukti: "Kalau hasilnya sama, sesi kedua tidak benar-benar berjalan bersamaan.",
+          },
+          {
+            id: "a6-8",
+            title: "Kumpulkan seluruh bukti",
+            baca: ["docs/panduan-anggota-6-pengujian-rilis.md bagian 3.1"],
+            kerja: [
+              "Pastikan bukti/ memuat reset, keamanan, indeks, uji, kueri, isolasi, dan verify.",
+              "Semua bukti diambil dari database hasil reset-db.sh.",
+            ],
+            command: { label: "Periksa bukti", code: "ls -la bukti/" },
+            expected: { text: "Tujuh berkas bukti lengkap dengan tanggal hari ini", screens: [] },
+            bukti: "Tidak ada bukti lama yang tersisa setelah skema berubah.",
+          },
+        ],
+      },
+      {
+        id: "F6",
+        title: "Rilis laporan",
+        tag: "rilis-v1",
+        ...doc("laporan/template-laporan.tex"),
+        steps: [
+          {
+            id: "a6-9",
+            title: "Tulis bab pengujian laporan",
+            baca: ["laporan/template-laporan.tex"],
+            kerja: [
+              "Isi bab pengujian dari kontrak sepuluh uji dan bukti/07_pengujian.txt.",
+              "Cocokkan setiap angka dengan bukti, jangan menyalin dari panduan buta.",
+            ],
+            command: {
+              label: "Cari kerangka",
+              code: "grep -n 'ISI: ambil dari' laporan/template-laporan.tex",
+            },
+            expected: {
+              text: "Komentar % ISI menandai setiap bagian yang harus diisi",
+              screens: ["09-laporan"],
+            },
+            bukti: "Bab pengujian memakai angka yang sama dengan bukti/.",
+          },
+          {
+            id: "a6-10",
+            title: "Rakit laporan lengkap",
+            baca: ["docs/panduan-anggota-6-pengujian-rilis.md bagian 4.1"],
+            kerja: [
+              "Terima bagian Bab I sampai III dari anggota lain dan gabungkan.",
+              "Pastikan Bab II memuat ERD, transformasi, normalisasi, kode, dan tangkapan layar.",
+            ],
+            command: {
+              label: "Periksa struktur",
+              code: "grep -n '\\\\chapter|\\\\section' laporan/template-laporan.tex",
+            },
+            expected: { text: "Tiga bab lengkap tanpa bagian kosong", screens: ["09-laporan"] },
+            bukti: "Tidak ada komentar % ISI yang tersisa di laporan final.",
+          },
+          {
+            id: "a6-11",
+            title: "Bangun kedua PDF",
+            baca: ["tools/build.sh"],
+            kerja: [
+              "Jalankan build.sh untuk panduan/utama.pdf dan laporan/template-laporan.pdf.",
+              "PDF di bawah 100 KB biasanya berarti kompilasi berhenti di tengah.",
+            ],
+            command: { label: "Build PDF", code: "bash tools/build.sh" },
+            expected: { text: "Dua PDF terbangun dengan daftar isi lengkap", screens: ["09-laporan"] },
+            bukti: "Sampul laporan memuat nama dan NIM; tidak ada rujukan menggantung.",
+          },
+          {
+            id: "a6-12",
+            title: "Daftar periksa akhir sebelum rilis",
+            baca: ["docs/panduan-anggota-6-pengujian-rilis.md bagian Milestone 5"],
+            kerja: [
+              "Periksa lima belas butir satu per satu, masing-masing dengan bukti.",
+              "Pastikan repositori bersih dari .aux, .log, dan .toc.",
+            ],
+            command: { label: "Cek sisa berkas", code: "git status --porcelain" },
+            expected: { text: "Tidak ada berkas .aux, .log, atau .toc tersisa", screens: ["09-laporan"] },
+            bukti: "Daftar periksa terisi penuh; rilis siap dikumpulkan.",
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export const JOURNEY = { foundation, members };

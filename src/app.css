@@ -169,7 +169,7 @@ body {
 
 .member-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -724,10 +724,6 @@ kbd {
 @media (max-width: 1400px) {
   .journey-layout {
     grid-template-columns: 260px minmax(0, 1fr) 320px;
-  }
-
-  .member-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
